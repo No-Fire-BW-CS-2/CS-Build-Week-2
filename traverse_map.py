@@ -17,7 +17,7 @@ map_data = {}
 map_data[data['room_id']] = data
 
 print("map_data", map_data)
-
+ 
 """
 {room_id: {title: "foo", terrain: "bar"}}
 """
