@@ -1,4 +1,6 @@
 from random import choice
+import json
+from urls import post, get, end
 
 
 class Queue:
@@ -54,27 +56,27 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        if room not in self.rooms:
-            self.rooms[room] = {d: '?' for d in room.get_exits()}
+        if room['room_id'] not in self.rooms:
+            self.rooms[room['room_id']] = room
+            self.rooms[room['room_id']]['exits'] = {d: '?' for d in room['exits']}
+        
 
-    def go_in_direction_until_dead_end(self, room, path=None):
-        if path == None:
-            path = []
+    def dfs(self, room):
         next_dirs = self.get_unexplored_dir(room)
         if len(next_dirs):
             direction = choice(next_dirs)
-            path.append(direction)
-            self.explore(room, direction)
-            next_room = room.get_room_in_direction(direction)
-            return self.go_in_direction_until_dead_end(next_room, path)
-        else:
-            return path
+            next_room = self.explore(direction, room)
+            return self.dfs(next_room)
 
     def get_unexplored_dir(self, room):
-        return [direction for direction, value in self.rooms[room].items() if value == '?']
+        return [direction for direction, value in self.rooms[room['room_id']]['exits'].items() if value == '?']
 
-    def explore(self, room, direction):
-        if direction in room.get_exits():
-            next_room = room.get_room_in_direction(direction)
-            self.rooms[room][direction] = next_room
-            self.rooms[next_room][reverse_dirs[direction]] = room
+    def explore(self, direction, room):
+        prev_room = room['room_id']
+        res = post(end['move'], {'direction': direction})
+        self.rooms[prev_room]['exits'][direction] = res['room_id']
+        self.add_vertex(res)
+        self.rooms[res['room_id']]['exits'][reverse_dirs[direction]] = prev_room
+        print(self.rooms[prev_room])
+        print(res)
+        return res

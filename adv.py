@@ -69,10 +69,8 @@ def find_unexplored_room():
     return None
 
 
-gr = Graph()
-for room in world.rooms.values():
-    gr.add_vertex(room)
-
+gr = Graph()    
+gr.add_vertex()
 
 while True:
     if not any('?' in d.values() for d in gr.rooms.values()):
