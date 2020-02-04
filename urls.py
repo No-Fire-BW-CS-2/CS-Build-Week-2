@@ -34,8 +34,10 @@ token = os.environ.get('TOKEN')
 headers = {'Authorization': "Token " + token}
 sleep_time = 0
 
+
 def post(endpoint, data):
     '''
+    accepts (endpoint, data)
     Makes a post request to the given endpoint with
     Authorization header included from env file and 
     returns a jsonified response with cooldown
@@ -43,9 +45,14 @@ def post(endpoint, data):
     req = requests.post(f'{base}{endpoint}/', json=data, headers=headers)
     json = req.json()
     if json['cooldown'] != 0:
-      sleep_time = float(json['cooldown'])
+        sleep_time = float(json['cooldown'])
+    print(f'sleep_time ({endpoint}) ---->', sleep_time)
+    if len(json['errors']):
+        for err in json['errors']:
+            print('error --->', err)
     sleep(sleep_time)
     return json
+
 
 def get(endpoint):
     '''
@@ -56,6 +63,10 @@ def get(endpoint):
     req = requests.get(f'{base}{endpoint}/', headers=headers)
     json = req.json()
     if json['cooldown'] != 0:
-      sleep_time = float(json['cooldown'])
+        sleep_time = float(json['cooldown'])
+    print(f'sleep_time ({endpoint}) ---->', sleep_time)
+    if len(json['errors']):
+        for err in json['errors']:
+            print('error --->', err)
     sleep(sleep_time)
     return json
