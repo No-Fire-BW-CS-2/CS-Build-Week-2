@@ -24,5 +24,6 @@
     "spellright.documentTypes": [
         "markdown",
         "latex"
-    ]
+    ],
+    "python.pythonPath": "C:\\Users\\Brellin\\.virtualenvs\\CS-Build-Week-2-lWYgh5hF\\Scripts\\python.exe"
 }
