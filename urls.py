@@ -30,7 +30,8 @@ end = {
     'bal': 'bc/get_balance'
 }
 
-token = os.environ.get('TOKEN')
+# token = os.environ.get('TOKEN')
+token = '64eb78927a0a72150ee8783e77bcda5a2d8689f2'
 headers = {'Authorization': "Token " + token}
 sleep_time = 1
 
