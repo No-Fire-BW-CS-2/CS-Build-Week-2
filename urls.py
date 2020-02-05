@@ -30,9 +30,9 @@ end = {
     'bal': 'bc/get_balance'
 }
 
-token = '7bf2d036546d9a0cc03425aefe1becb6fdc8486c'
+token = os.environ.get('TOKEN')
 headers = {'Authorization': "Token " + token}
-sleep_time = 0
+sleep_time = 1
 
 
 def post(endpoint, data):

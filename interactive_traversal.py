@@ -1,5 +1,6 @@
 from urls import post, get, end
 from util import Queue, Stack, Graph, reverse_dirs
+from mine import proof_of_work
 import json
 """
 1. pick up treasure
@@ -32,11 +33,11 @@ gr = Graph()
 # gr.add_vertex(data)
 
 with open('map.json') as map:
-  completed_map = json.load(map)
-  for room in completed_map:
-    if completed_map[room] == data['room_id']:
-      data = completed_map[room]
-    gr.add_vertex(completed_map[room])
+    completed_map = json.load(map)
+    for room in completed_map:
+        if completed_map[room] == data['room_id']:
+            data = completed_map[room]
+        gr.add_vertex(completed_map[room])
 # print(gr.rooms)
 # print(gr.rooms[325]['room_id'], gr.rooms[325]['exits'])
 # quit()
@@ -83,24 +84,24 @@ if status['name'][:4] == 'User':
     print("path to namechanger --------->", path)
     name = input("What is your name? ")
     res = post(end['name'], {"name": f"{name}"})
-    confirm = post(end['name'], {"name": f"{name}", "confirm": "aye"}) 
-    # print(confirm)   
-    status = post(end['status'], {})
-    print(status)
+    confirm = post(end['name'], {"name": f"{name}", "confirm": "aye"})
+    # print(confirm)
+    # status = post(end['status'], {})
+    # print(status)
 if status['name'][:4] != 'User':
-  status = post(end['status'], {})
-  inventory = status['inventory']
-  gold = int(status['gold'])
-  encumbrance = int(status['encumbrance'])
-  print(status)
-  # 55 is wishing well
-  wishing_path = gr.get_path_to_room(data, 55)
-  # wishing_path = gr.bfs_shortest_path(data, 55)
-  print("path to wishing well  --------->", wishing_path)
-  examined = post(end['examine'], {"name": "well"})
-  print(examined)
-  mine_room = gr.get_path_to_room(wishing_path, int(input('Which room would you like to go to? ')))
-  print(mine_room)
-  
-
-  
+    print('status ---->', status)353
+    # 55 is wishing well
+    well = gr.get_path_to_room(data, 55)
+    print("wishing well ---->", well)
+    mine_room = gr.get_path_to_room(data, int(
+        input('Which room is your mining room? ')))
+    balance = get(end['bal'])
+    print('balance ---->', balance)
+    while True:
+        last_proof = get(end['lp'])
+        next_proof = proof_of_work(last_proof)
+        check_proof = post(end['mine'], {'proof': next_proof})
+        mine_status = post(end['status'], {})
+        print('mine_status ---->', mine_status)
+        balance = get(end['bal'])
+        print('balance ---->', balance)
