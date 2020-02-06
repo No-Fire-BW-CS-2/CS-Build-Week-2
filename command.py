@@ -21,11 +21,17 @@ def pray():
 
 
 def exits():
-    all_dirs = gr.get_all_directions(data)
-    print('\nYou can move:', end=' ')
-    for d in all_dirs:
-        print(d, end=' ')
-    print()
+    global data
+    all_exits = data['exits']
+    print('Exits: [', end='')
+    for i, x in enumerate(all_exits):
+        room_id = gr.rooms[data['room_id']]['exits'][x]
+        room_title = gr.rooms[room_id]['title']
+        if i + 1 == len(all_exits):
+            print(f'{x} ({room_id} - {room_title})', end='')
+        else:
+            print(f'{x} ({room_id} - {room_title})', end=', ')
+    print(']')
 
 
 def print_room(room):
@@ -37,16 +43,6 @@ def print_room(room):
     exits = room['exits']
     messages = room['messages']
     print(f'Room {room_id} - {title}:\n\t{description}')
-    print('Exits: [', end='')
-    for i, x in enumerate(exits):
-        global data
-        room_id = gr.rooms[room['room_id']]['exits'][x]
-        room_title = gr.rooms[room_id]['title']
-        if i + 1 == len(exits):
-            print(f'{x} ({room_id} - {room_title})', end='')
-        else:
-            print(f'{x} ({room_id} - {room_title})', end=', ')
-    print(']')
     if len(players):
         print('Players in room:')
         for player in players:
@@ -59,7 +55,15 @@ def print_room(room):
         print('Messages:')
         for message in messages:
             print(f'\t{message}')
-    print()
+    print('Exits: [', end='')
+    for i, x in enumerate(exits):
+        room_id = gr.rooms[room['room_id']]['exits'][x]
+        room_title = gr.rooms[room_id]['title']
+        if i + 1 == len(exits):
+            print(f'{x} ({room_id} - {room_title})', end='')
+        else:
+            print(f'{x} ({room_id} - {room_title})', end=', ')
+    print(']')
 
 
 def print_info(request):
@@ -75,14 +79,6 @@ def get_req(endpoint):
         print_info(req)
 
 
-def well():
-    global data
-    well = gr.get_path_to_room(data, 55)
-    print_room(well)
-    data = well
-    return well
-
-
 def travel(room_id):
     global data
     travelled = gr.get_path_to_room(data, int(room_id))
@@ -91,11 +87,29 @@ def travel(room_id):
     return travelled
 
 
+def well():
+    travel(55)
+
+
+def shop():
+    travel(1)
+    status = post(end['status'], {})
+    inventory = status['inventory']
+    while len(inventory):
+        print(inventory)
+        post(end['sell'], {"name": "treasure"})
+        post(end['sell'], {"name": "treasure", "confirm": "yes"})
+        status = post(end['status'], {})
+        inventory = status['inventory']
+
+
 def move(direction):
     global data
     room_in_dir = gr.rooms[data['room_id']]['exits'][direction]
-    moved = post(end['move'], {'direction': direction,
-                               'next_room_id': str(room_in_dir)})
+    moved = post(end['move'], {
+        'direction': direction,
+        'next_room_id': str(room_in_dir)
+    })
     print_room(moved)
     data = moved
     return moved
@@ -118,7 +132,7 @@ def examine(target):
 
 def take(target):
     taken = post(end['take'], {'name': target})
-    print_info(taken)
+    print_room(taken)
     return taken
 
 
@@ -128,6 +142,7 @@ cmds = {
     'pray': pray,
     'well': well,
     'exits': exits,
+    'shop': shop,
     'self': {
         'bal': get_req,
         'status': get_req,
@@ -147,9 +162,10 @@ Command options:
 \tTravel <room> (begins a journey to <room> number)
 \tExits (prints the exits in current room)
 \tMove <direction> (will move you in the direction specified)
+\tStatus (shows your character's status)
+\tShop (begins journey to shop)
 \tWell (begins a journey to the well)
 \tBal (shows your current coin balance)
-\tStatus (shows your character's status)
 \tExamine <target> (examines the specified target - can be player or item)
 \tRoom (shows details of current room)
 \tTake <target> (picks up an item)
@@ -175,7 +191,7 @@ while not crashed:
         elif cmd == 'help':
             print(instructions)
         else:
-            print(f'Comman "{cmd}" not recognized.')
+            print(f'Command "{cmd}" not recognized.')
 
     elif command[0] in cmds['double']:
         cmds['double'][command[0]](command[1])
