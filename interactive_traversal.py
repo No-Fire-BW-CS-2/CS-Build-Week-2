@@ -2,6 +2,7 @@ from urls import post, get, end
 from util import Queue, Stack, Graph, reverse_dirs
 from mine import proof_of_work
 import json
+import os
 """
 1. pick up treasure
 2. sell treasure (up to 1000 gc)
@@ -88,19 +89,31 @@ if status['name'][:4] == 'User':
     # status = post(end['status'], {})
     # print(status)
 if status['name'][:4] != 'User':
-    # print('status ---->', status)
-    # # 55 is wishing well
-    # well = gr.get_path_to_room(data, 55)
-    # print("wishing well ---->", well)
-    # mine_room = gr.get_path_to_room(data, int(
-    #     input('Which room is your mining room? ')))
-    balance = get(end['bal'])
-    print('balance ---->', balance)
     while True:
-        last_proof = get(end['lp'])
-        next_proof = proof_of_work(last_proof)
-        check_proof = post(end['mine'], {'proof': next_proof})
-        mine_status = post(end['status'], {})
-        print('mine_status ---->', mine_status)
+        to_go = input('Which room would you like to go to? ')
+        next_room = gr.get_path_to_room(data, int(to_go))
         balance = get(end['bal'])
         print('balance ---->', balance)
+        if to_go == '55':
+            examine = post(end['examine'], {'name': 'well'})
+            print('examine well ---->', examine)
+            ls8 = examine['description'][39:].split('\n')
+            with open('ls8.ls8', 'w') as ls:
+                ls.truncate()
+                for line in ls8:
+                    if line != '':
+                        json.dump(int(line), ls)
+                        ls.write('\n')
+            os.system('python ls8.py ls8.ls8')
+        else:
+            mining = True
+            while mining:
+                last_proof = get(end['lp'])
+                next_proof = proof_of_work(last_proof)
+                check_proof = post(end['mine'], {'proof': next_proof})
+                mine_status = post(end['status'], {})
+                print('mine_status ---->', mine_status)
+                balance = get(end['bal'])
+                print('balance ---->', balance)
+                if not len(check_proof['errors']):
+                    mining = False
