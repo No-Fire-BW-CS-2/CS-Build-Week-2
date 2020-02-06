@@ -63,11 +63,12 @@ def print_room(room):
 
 
 def print_info(request):
-    print(request)
+    print(json.dumps(request, indent=2))
 
 
 def get_req(endpoint):
-    req = get(end[endpoint])
+    req = get(end[endpoint]) if endpoint != 'status' else post(
+        end[endpoint], {})
     if endpoint == 'init':
         print_room(req)
     else:
@@ -115,6 +116,12 @@ def examine(target):
     return examined
 
 
+def take(target):
+    taken = post(end['take'], {'name': target})
+    print_info(taken)
+    return taken
+
+
 global cmds
 cmds = {
     'mine': mine,
@@ -129,6 +136,7 @@ cmds = {
         'travel': travel,
         'move': move,
         'examine': examine,
+        'take': take,
     }
 }
 
