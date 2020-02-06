@@ -27,10 +27,11 @@ def exits():
     for i, x in enumerate(all_exits):
         room_id = gr.rooms[data['room_id']]['exits'][x]
         room_title = gr.rooms[room_id]['title']
-        if i + 1 == len(all_exits):
-            print(f'{x} ({room_id} - {room_title})', end='')
+        terrain = gr.rooms[room_id]['terrain']
+        if i + 1 == len(exits):
+            print(f'{x} ({room_id} - {room_title} [{terrain}])', end='')
         else:
-            print(f'{x} ({room_id} - {room_title})', end=', ')
+            print(f'{x} ({room_id} - {room_title} [{terrain}])', end=', ')
     print(']')
 
 
@@ -59,10 +60,11 @@ def print_room(room):
     for i, x in enumerate(exits):
         room_id = gr.rooms[room['room_id']]['exits'][x]
         room_title = gr.rooms[room_id]['title']
+        terrain = gr.rooms[room_id]['terrain']
         if i + 1 == len(exits):
-            print(f'{x} ({room_id} - {room_title})', end='')
+            print(f'{x} ({room_id} - {room_title} [{terrain}])', end='')
         else:
-            print(f'{x} ({room_id} - {room_title})', end=', ')
+            print(f'{x} ({room_id} - {room_title} [{terrain}])', end=', ')
     print(']')
 
 
