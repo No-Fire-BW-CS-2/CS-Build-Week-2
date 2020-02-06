@@ -40,7 +40,7 @@ def print_room(room):
     print('Exits: [', end='')
     for i, x in enumerate(exits):
         global data
-        room_id = gr.rooms[data['room_id']]['exits'][x]
+        room_id = gr.rooms[room['room_id']]['exits'][x]
         if i + 1 == len(exits):
             print(f'{x} ({room_id})', end='')
         else:
