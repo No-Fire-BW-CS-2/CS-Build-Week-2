@@ -185,8 +185,9 @@ class Graph:
                 for d in next_dirs:
                     room_in_next_dir = self.get_room_in_dir(curr_room, d)
                     if f'{room_in_next_dir}{d}' not in visited:
-                        q.enqueue(list(path_to_room) +
-                                  [{'d': d, 'next_room': room_in_next_dir}])
+                        if self.rooms[room_in_next_dir]['terrain'] != 'TRAP' or len(next_dirs) == 2:
+                            q.enqueue(list(path_to_room) +
+                                      [{'d': d, 'next_room': room_in_next_dir}])
 
 
 """
