@@ -97,21 +97,6 @@ class Graph:
 
     def explore(self, direction, room, next_room=None):
         prev_room = room['room_id']
-        # if len(room['items']):
-        #     status = post(end['status'], {})
-        #     if int(status['encumbrance']) <= int(status['strength']):
-        #         # pick up treasure
-        #         for item in room['items']:
-        #             take = post(end['take'], {'name': item})
-        #             self.rooms[prev_room]['items'] = take['items']
-        #             print(
-        #                 f'response from taking {item} from room {prev_room} ---->', take)
-
-        # if (shrine) pray
-        # if (elevation) fly
-        # if (know straight line) dash
-        status = post(end['status'], {})
-        print(status)
         if next_room:
             res = post(end['move'], {
                        'direction': direction, 'next_room_id': str(next_room)})
@@ -121,9 +106,6 @@ class Graph:
             self.add_vertex(res)
             self.rooms[res['room_id']
                        ]['exits'][reverse_dirs[direction]] = prev_room
-
-        # print(self.rooms[prev_room])
-        # print(res)
         return res
 
     def explore_path(self, room, path):
@@ -138,10 +120,14 @@ class Graph:
             }
         ]
         '''
+        path_length = len(path)
         curr_room = room
         for obj in path:
+            print('number of rooms left to explore ---->', path_length)
             explored = self.explore(obj['d'], room, obj['next_room'])
+            print('explored room ---->', explored)
             curr_room = explored
+            path_length -= 1
         return curr_room
 
     def backtrack_to_unex(self, room):
@@ -155,7 +141,6 @@ class Graph:
         visited = set()
         for d in all_dirs:
             next_room = self.get_room_in_dir(room, d)
-            # enqueue inital directions in self.explore_path format
             q.enqueue([{'d': d, 'next_room': next_room}])
         current_room = room
         while q.size:
@@ -171,7 +156,6 @@ class Graph:
                 for d in next_dirs:
                     room_in_next_dir = self.get_room_in_dir(current_room, d)
                     if room_in_next_dir not in visited:
-                        # enqueue next room's directions in self.explore_path format
                         q.enqueue(list(back_path) +
                                   [{'d': d, 'next_room': room_in_next_dir}])
 
@@ -185,11 +169,9 @@ class Graph:
         curr_room = curr
         q = Queue()
         all_dirs = self.get_all_directions(curr)
-        print('all dirs ---->', all_dirs)
         visited = set()
         for d in all_dirs:
             next_room = self.get_room_in_dir(curr, d)
-            print('next_room ---->', next_room)
             q.enqueue([{'d': d, 'next_room': next_room}])
         while q.size:
             path_to_room = q.dequeue()
@@ -201,7 +183,6 @@ class Graph:
                 return self.explore_path(curr, path_to_room)
             else:
                 next_dirs = self.get_all_directions(self.rooms[room_in_dir])
-                print('next_dirs ---->', f'{room_in_dir}: {next_dirs}')
                 for d in next_dirs:
                     room_in_next_dir = self.get_room_in_dir(curr_room, d)
                     if f'{room_in_next_dir}{d}' not in visited:

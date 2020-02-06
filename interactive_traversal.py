@@ -1,5 +1,5 @@
 from urls import post, get, end
-from util import Queue, Stack, Graph, reverse_dirs
+from util import Graph
 from mine import proof_of_work
 import json
 import os
@@ -90,11 +90,12 @@ if status['name'][:4] == 'User':
     # print(status)
 if status['name'][:4] != 'User':
     while True:
-        to_go = input('Which room would you like to go to? ')
-        next_room = gr.get_path_to_room(data, int(to_go))
+        to_go = int(input('Which room would you like to go to? '))
+        to_go_room = gr.get_path_to_room(data, to_go)
+        data = to_go_room
         balance = get(end['bal'])
         print('balance ---->', balance)
-        if to_go == '55':
+        if to_go == 55:
             examine = post(end['examine'], {'name': 'well'})
             print('examine well ---->', examine)
             ls8 = examine['description'][39:].split('\n')

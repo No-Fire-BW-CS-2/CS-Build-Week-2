@@ -50,7 +50,7 @@ def post(endpoint, data):
     print(f'sleep_time ({endpoint}) ---->', sleep_time)
     if len(json['errors']):
         for err in json['errors']:
-            print('error --->', err)
+            print('\nERROR --->', err, end='\n\n')
     sleep(sleep_time)
     return json
 
@@ -68,6 +68,6 @@ def get(endpoint):
     print(f'sleep_time ({endpoint}) ---->', sleep_time)
     if len(json['errors']):
         for err in json['errors']:
-            print('error --->', err)
+            print('\nERROR --->', err, end='\n\n')
     sleep(sleep_time)
     return json
