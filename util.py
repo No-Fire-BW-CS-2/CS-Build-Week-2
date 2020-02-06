@@ -1,6 +1,6 @@
 from random import choice
-import json
 from urls import post, get, end
+import json
 
 
 class Queue:
@@ -125,7 +125,6 @@ class Graph:
         for obj in path:
             print('number of rooms left to explore ---->', path_length)
             explored = self.explore(obj['d'], room, obj['next_room'])
-            print('explored room ---->', explored)
             curr_room = explored
             path_length -= 1
         return curr_room

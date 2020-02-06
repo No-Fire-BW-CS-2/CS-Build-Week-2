@@ -41,10 +41,11 @@ def print_room(room):
     for i, x in enumerate(exits):
         global data
         room_id = gr.rooms[room['room_id']]['exits'][x]
+        room_title = gr.rooms[room_id]['title']
         if i + 1 == len(exits):
-            print(f'{x} ({room_id})', end='')
+            print(f'{x} ({room_id} - {room_title})', end='')
         else:
-            print(f'{x} ({room_id})', end=', ')
+            print(f'{x} ({room_id} - {room_title})', end=', ')
     print(']')
     if len(players):
         print('Players in room:')
