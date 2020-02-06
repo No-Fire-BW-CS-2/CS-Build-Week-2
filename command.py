@@ -28,7 +28,7 @@ def exits():
         room_id = gr.rooms[data['room_id']]['exits'][x]
         room_title = gr.rooms[room_id]['title']
         terrain = gr.rooms[room_id]['terrain']
-        if i + 1 == len(exits):
+        if i + 1 == len(all_exits):
             print(f'{x} ({room_id} - {room_title} [{terrain}])', end='')
         else:
             print(f'{x} ({room_id} - {room_title} [{terrain}])', end=', ')
@@ -138,6 +138,12 @@ def take(target):
     return taken
 
 
+def transmogrify(item):
+    mog = post(end['change'], {'name': item})
+    print_info(mog)
+    return mog
+
+
 global cmds
 cmds = {
     'mine': mine,
@@ -154,6 +160,7 @@ cmds = {
         'move': move,
         'examine': examine,
         'take': take,
+        'mog': transmogrify,
     }
 }
 
@@ -171,6 +178,8 @@ Command options:
 \tExamine <target> (examines the specified target - can be player or item)
 \tRoom (shows details of current room)
 \tTake <target> (picks up an item)
+\tMog <item> (transmogrify <item>)
+\tWear <item> (wear <item>)
 \tCarry <target> (TBD)
 \tHelp (print these instructions again)
 '''
@@ -197,6 +206,10 @@ while not crashed:
 
     elif command[0] in cmds['double']:
         cmds['double'][command[0]](command[1])
+
+    elif command[0] == 'wear':
+        item = ' '.join(command[1:])
+        wear = post(end['wear'], {'name': item})
 
     else:
         print(f'Wtf is {cmd}?')
