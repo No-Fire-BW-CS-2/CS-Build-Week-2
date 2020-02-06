@@ -7,8 +7,12 @@ import os
 global data
 data = get(end['init'])
 
+global snitch
+snitch = False if data['room_id'] < 500 else True
+
 gr = Graph()
-with open('map.json') as map:
+map_file = 'map.json' if snitch == False else 'map2.json'
+with open(map_file) as map:
     completed_map = json.load(map)
     for room in completed_map:
         if completed_map[room] == data['room_id']:
@@ -73,12 +77,16 @@ def print_info(request):
 
 
 def get_req(endpoint):
-    req = get(end[endpoint]) if endpoint != 'status' else post(
-        end[endpoint], {})
-    if endpoint == 'init':
-        print_room(req)
-    else:
-        print_info(req)
+    req = get(end[endpoint])
+    print_info(req)
+
+
+def post_req(endpoint):
+    req = post(end[endpoint], {})
+    if endpoint == 'warp':
+        global snitch
+        snitch = True if snitch == False else False
+    print_info(req)
 
 
 def travel(room_id):
@@ -140,7 +148,8 @@ def take(target):
 
 def transmogrify(item):
     mog = post(end['change'], {'name': item})
-    print_info(mog)
+    get_req('status')
+    print_room(mog)
     return mog
 
 
@@ -153,7 +162,8 @@ cmds = {
     'shop': shop,
     'self': {
         'bal': get_req,
-        'status': get_req,
+        'status': post_req,
+        'warp': post_req
     },
     'double': {
         'travel': travel,
@@ -180,7 +190,9 @@ Command options:
 \tTake <target> (picks up an item)
 \tMog <item> (transmogrify <item>)
 \tWear <item> (wear <item>)
+\tUndress <item> (unwear <item>)
 \tCarry <target> (TBD)
+\tWarp (warp to alternate dimension)
 \tHelp (print these instructions again)
 '''
 
@@ -210,6 +222,12 @@ while not crashed:
     elif command[0] == 'wear':
         item = ' '.join(command[1:])
         wear = post(end['wear'], {'name': item})
+        print_info(wear)
+
+    elif command[0] == 'undress':
+        item = ' '.join(command[1:])
+        undress = post(end['undress'], {'name': item})
+        print_info(undress)
 
     else:
         print(f'Wtf is {cmd}?')
