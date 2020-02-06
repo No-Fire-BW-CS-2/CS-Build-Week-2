@@ -20,10 +20,6 @@ with open(map_file) as map:
         gr.add_vertex(completed_map[room])
 
 
-def pray():
-    return post(end['pray'], {})
-
-
 def exits():
     global data
     all_exits = data['exits']
@@ -128,7 +124,7 @@ def move(direction):
 def examine(target):
     examined = post(end['examine'], {'name': target})
     print_info(examined)
-    if data['room_id'] == 55:
+    if data['room_id'] == 55 or data['room_id'] == 555:
         ls8 = examined['description'][39:].split('\n')
         with open('ls8.ls8', 'w') as ls:
             ls.truncate()
@@ -156,14 +152,14 @@ def transmogrify(item):
 global cmds
 cmds = {
     'mine': mine,
-    'pray': pray,
     'well': well,
     'exits': exits,
     'shop': shop,
     'self': {
         'bal': get_req,
         'status': post_req,
-        'warp': post_req
+        'warp': post_req,
+        'pray': post_req,
     },
     'double': {
         'travel': travel,
