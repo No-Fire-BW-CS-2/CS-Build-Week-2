@@ -82,11 +82,14 @@ def post_req(endpoint):
     if endpoint == 'warp':
         global snitch
         snitch = True if snitch == False else False
-    print_info(req)
+        print_room(req)
+    else:
+        print_info(req)
 
 
 def travel(room_id):
     global data
+    data = get(end['init'])
     travelled = gr.get_path_to_room(data, int(room_id))
     print_room(travelled)
     data = travelled
@@ -94,7 +97,9 @@ def travel(room_id):
 
 
 def well():
-    travel(55)
+    global snitch
+    well_num = 55 if not snitch else 555
+    return travel(well_num)
 
 
 def shop():
@@ -124,7 +129,7 @@ def move(direction):
 def examine(target):
     examined = post(end['examine'], {'name': target})
     print_info(examined)
-    if data['room_id'] == 55 or data['room_id'] == 555:
+    if target == 'well':
         ls8 = examined['description'][39:].split('\n')
         with open('ls8.ls8', 'w') as ls:
             ls.truncate()
@@ -133,7 +138,18 @@ def examine(target):
                     json.dump(int(line), ls)
                     ls.write('\n')
         os.system('python ls8.py ls8.ls8')
+        with open('room.ls8') as room_file:
+            return travel(room_file.read())
     return examined
+
+
+def mine_loop():
+    while True:
+        global data
+        data = well()
+        data = examine('well')
+        mine()
+        get_req('bal')
 
 
 def take(target):
@@ -151,7 +167,7 @@ def transmogrify(item):
 
 global cmds
 cmds = {
-    'mine': mine,
+    'mine': mine_loop,
     'well': well,
     'exits': exits,
     'shop': shop,

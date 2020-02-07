@@ -9,10 +9,6 @@ def mine():
         last_proof = get(end['lp'])
         next_proof = proof_of_work(last_proof)
         check_proof = post(end['mine'], {'proof': next_proof})
-        mine_status = post(end['status'], {})
-        print('mine_status ---->', mine_status)
-        balance = get(end['bal'])
-        print('balance ---->', balance)
         if not len(check_proof['errors']):
             break
 
@@ -20,12 +16,12 @@ def mine():
 def proof_of_work(last_proof):
     start = timer()
 
-    print("Searching for next proof")
+    print('Searching for next proof')
     proof = last_proof['proof']
-    print('last_proof ---->', last_proof)
     while valid_proof(last_proof['proof'], proof, last_proof['difficulty']) is False:
         proof += 1
-    print("Proof found: " + str(proof) + " in " + str(timer() - start))
+    print('Proof found: (' + str(proof) + ') in ' +
+          str(round(timer() - start, 2)) + ' seconds.')
     return proof
 
 

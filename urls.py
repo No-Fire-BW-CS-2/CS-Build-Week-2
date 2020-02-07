@@ -47,7 +47,7 @@ def post(endpoint, data):
     json = req.json()
     if json['cooldown'] != 0:
         sleep_time = float(json['cooldown'])
-    print(f'sleep_time ({endpoint}) ---->', sleep_time)
+    print(f'{endpoint} ----> {sleep_time} second cooldown')
     if len(json['errors']):
         for err in json['errors']:
             print('\nERROR --->', err, end='\n\n')
@@ -65,7 +65,7 @@ def get(endpoint):
     json = req.json()
     if json['cooldown'] != 0:
         sleep_time = float(json['cooldown'])
-    print(f'sleep_time ({endpoint}) ---->', sleep_time)
+    print(f'{endpoint} ----> {sleep_time} second cooldown')
     if len(json['errors']):
         for err in json['errors']:
             print('\nERROR --->', err, end='\n\n')
