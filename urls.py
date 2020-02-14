@@ -30,9 +30,9 @@ end = {
     'bal': 'bc/get_balance'
 }
 
-# token = os.environ.get('TOKEN')
-token = '64eb78927a0a72150ee8783e77bcda5a2d8689f2'
+token = os.environ.get('TOKEN')
 headers = {'Authorization': "Token " + token}
+
 sleep_time = 1
 
 
@@ -47,10 +47,10 @@ def post(endpoint, data):
     json = req.json()
     if json['cooldown'] != 0:
         sleep_time = float(json['cooldown'])
-    print(f'sleep_time ({endpoint}) ---->', sleep_time)
+    print(f'{endpoint} ----> {sleep_time} second cooldown')
     if len(json['errors']):
         for err in json['errors']:
-            print('error --->', err)
+            print('\nERROR --->', err, end='\n\n')
     sleep(sleep_time)
     return json
 
@@ -65,9 +65,9 @@ def get(endpoint):
     json = req.json()
     if json['cooldown'] != 0:
         sleep_time = float(json['cooldown'])
-    print(f'sleep_time ({endpoint}) ---->', sleep_time)
+    print(f'{endpoint} ----> {sleep_time} second cooldown')
     if len(json['errors']):
         for err in json['errors']:
-            print('error --->', err)
+            print('\nERROR --->', err, end='\n\n')
     sleep(sleep_time)
     return json

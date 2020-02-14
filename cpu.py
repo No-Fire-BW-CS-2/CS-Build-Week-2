@@ -21,7 +21,7 @@ NOT = 0x69   # NOT in given register
 SHL = 0xAC   # Shift registerA left by bits in registerB, filling the low bits with 0
 SHR = 0xAD   # Shift registerA right by bits in registerB, filling the high bits with 0
 MOD = 0xA4   # Divide first register by second, store >>remainder<< of the result in registerA
-PRA = 0b01001000
+PRA = 0x48
 
 
 class CPU:
@@ -58,9 +58,10 @@ class CPU:
                 NOT: self.alu,
                 SHL: self.alu,
                 SHR: self.alu,
-                MOD: self.alu
+                MOD: self.alu,
             }
         }
+        self.room_lines = []
 
     def load(self, path):
         """Load a program into memory."""
@@ -87,6 +88,9 @@ class CPU:
             address += 1
 
     def hlt(self, *args):
+        with open('room.ls8', 'w') as outfile:
+            outfile.truncate()
+            outfile.write(''.join(self.room_lines[-3:]))
         exit()
 
     def ldi(self, operand_a, operand_b):
@@ -94,6 +98,12 @@ class CPU:
 
     def prn(self, operand_a, *args):
         print(self.reg[operand_a])
+
+    def pra(self, *args):
+        op_a = self.ram_read(self.pc + 1)
+        print_ascii = chr(self.reg[op_a])
+        # print(print_ascii)
+        self.room_lines.append(print_ascii)
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
@@ -126,11 +136,6 @@ class CPU:
         val = self.ram_read(self.sp)
         self.reg[operand_a] = val
         self.sp += 1
-
-    def pra(self, *args):
-        op_a = self.ram_read(self.pc + 1)
-        print_ascii = chr(self.reg[op_a])
-        print(print_ascii)
 
     def push(self, operand_a, *args):
         """
