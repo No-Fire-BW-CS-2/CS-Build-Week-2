@@ -40,6 +40,8 @@ with open('map.json') as map:
             data = completed_map[room]
         gr.add_vertex(completed_map[room])
 # print(gr.rooms)
+# print(gr.rooms[325]['room_id'], gr.rooms[325]['exits'])
+# quit()
 
 status = post(end['status'], {})
 inventory = status['inventory']
@@ -71,15 +73,14 @@ if status['name'][:4] == 'User':
         path = gr.get_path_to_room(data, 1)
         print("path -------------->", path)
         while len(inventory) > 0:
-            post(end['sell'], {"name": "treasure"})
-            post(end['sell'], {"name": "treasure", "confirm": "yes"})
-            status = post(end['status'], {})
-            inventory = status['inventory']
-            gold = int(status['gold'])
-            encumbrance = int(status['encumbrance'])
-            print("Status", status)
-    print("was this reached")
-    # 467
+          post(end['sell'], {"name":"treasure"})
+          post(end['sell'], {"name":"treasure", "confirm": "yes"})
+          status = post(end['status'], {})
+          inventory = status['inventory']
+          gold = int(status['gold'])
+          encumbrance = int(status['encumbrance'])
+          print("Status", status)
+  # 467 
     path = gr.get_path_to_room(data, 467)
     print("path to namechanger --------->", path)
     name = input("What is your name? ")
